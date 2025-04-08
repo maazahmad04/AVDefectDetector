@@ -124,14 +124,69 @@ function createStyledTooltip(defectDetails) {
 
 window.detectImageDefects = async function(defectTypes) {
   const prompts = {
-    symbolic: "Identify symbolic, focus, or scope ambiguity in this image.",
-    focus: "Detect any inconsistencies in the image.",
-    background: "Is there spatial or logical incompleteness in this image?",
-    indexical: "Is there spatial or logical incompleteness in this image?",
-    scope: "Is there spatial or logical incompleteness in this image?",
-    spatial: "Is there spatial or logical incompleteness in this image?",
-    inconsistency: "Is there spatial or logical incompleteness in this image?",
-  };
+    symbolic: `A symbolic ambiguity is a type of defect that can appear in an image used for AV requirements. This is how to identify if a symbolic ambiguity is present in an image or not.
+Symbolic Ambiguity:
+Differences in the interpretation of visual signs are based on conventions associated with their meanings by usage, such as color, size, shape, or position. Example:  “I thought that element is more important and risky than the others because it's bigger and drawn in red color.” “Misinterpretation of a traffic sign where a red exclamation mark could mean wrong action or proceed with caution.”
+
+Here are the steps:
+- Describe the situation the image is trying to depict.
+- List all the visible symbols in the image.
+- Record specific features of these symbols such as color, shape, size, position, etc., and identify if any of these are associated with conventional meanings (such as red color indicating danger or restriction).
+- Analyze the features of the symbols and determine if their conventional meaning is actually intended with the situation the image is trying to depict.
+- If the conventional meaning is not intended, but readers could interpret the image in that way, then the image contains a symbolic ambiguity.`,
+    background: `A background or familiarity ambiguity is a type of defect that can appear in an image used for AV requirements. This is how to identify if a background or familiarity ambiguity is present in an image or not.
+Background & Familiarity Ambiguity:
+Potential differences in understanding that may arise due to differing cultural or professional backgrounds of collaborators (Background) or Potential differences in interpretations that can arise due to collaborators being familiar with different understandings of a specific visual (Familiarity). Example: “I was reading your diagram from right to left instead of vice versa, as we usually do this in Arab countries. No wonder it didn't make sense.” “I thought that symbol represented a decision point, as we used it in flow charts, and not a document.” “Speed limit in all emirates other than Abu Dhabi allows for an extra 20 km/h over the posted limit.”  “I interpreted the avalanche pictogram inside the loop diagram as meaning ‘natural causes’, not as defining it as a vicious, self-intensifying cycle.”  “Present if a certain software designer or collaborator is not aware of the intended meaning of a road/safety rule.”
+
+Here are the steps:
+- Describe the situation the image is trying to depict.
+- Identify the key elements that help convey this information (signs, objects, text, etc.)
+- Do any of the elements identified potentially have different ways of representation or meaning in other cultures or professional backgrounds.  Assume the readers come from different cultural backgrounds and varying professions and levels of technical expertise.
+- If an element has a different meaning or way of representation which could potentially lead the reader to understand the image differently, then the image is ambiguous.
+`,
+    focus: `A focus ambiguity is a type of defect that can appear in an image used for AV requirements. This is how to identify if a focus ambiguity is present in an image or not.
+Focus Ambiguity:
+Variations in interpretation can occur due to collaborators referring to different parts of an image. Example: “I thought you were referring to the lower part of the drawing right now, not the upper part.”  “In a tailgating scenario with a vehicle in the left lane, the reference car can be the tailgating car indicating that tailgating is dangerous, or it can be the car in front indicating that the car must give way in the left lane.”
+
+Here are the steps:
+- Describe what situation the image is trying to depict.
+- Identify any prominent or stand-out elements in the image (objects, people, signs, etc.)
+- Analyze what each element is trying to communicate (taking each element as an individual context)
+- Do any of the elements, when analyzed individually, lead to a different interpretation as compared to the intended interpretation of the entire image.
+- If yes, then a focus ambiguity exists.`,
+    scope: `A scope ambiguity is a type of defect that can appear in an image used for AV requirements. This is how to identify if a scope ambiguity is present in an image or not.
+Scope Ambiguity:
+Differences in interpretation can arise due to collaborators assuming the visual element serves a different purpose.  Example: “I thought this picture was only helping us to analyze the problem, not already document a final decision.” “In a road merging scenario, it could be unclear whether the hazard is due to the car in front or the car behind or both.”
+
+Here are the steps:
+- Describe the context of the image and explain what you think the purpose of the image is (to describe, to warn, to convince, etc.).
+- Identify the key elements of the image that help achieve this purpose.
+- Is it clear from a reader’s point of view that these elements are used for the identified purpose only.
+- If there is a possibility that the reader could understand the image differently and assume a different purpose, then the image is ambiguous (e.g. does a warning image apply for all scenarios or just the situation shown, etc.)`,
+    spatial: `Spatial incompleteness is a type of defect that can appear in an image used for AV requirements. This is how to identify if a spatial incompleteness is present in an image or not.
+Spatial Incompleteness:
+Refers to situations when a larger scope of the image is required to understand the complete picture. Example: “In lane changes, a wider view showing the road ahead is necessary to know if there is any car or obstruction close ahead in the lane to be changed to, in addition to a view of the road behind.”
+
+Here are the steps:
+- Describe what situation the image is trying to depict.
+- List all necessary details that should be present in the image so that the reader understands the intended situation.
+- Verify if the image shows all these necessary details.
+- If there is some information missing, determine if it could have been shown in a larger or different perspective of the image (more view of the surrounding area, different angle or view of the picture, etc.)
+- If the missing details could be shown in a different scope of the image, then the image is incomplete.
+`,
+    inconsistency: `A local inconsistency is a type of defect that can appear in an image used for AV requirements. This is how to identify if a local inconsistency is present in an image or not.
+Local Inconsistency:
+Multiple elements within the same image contradict each other or appear in a way that does not make logical sense. Example: “If a traffic light is malfunctioning and stuck on red and a police officer is signaling cars to go ahead.”
+
+Here are the steps:
+- Describe what situation the image is trying to depict.
+- Identify the key elements in the image (objects, people, signs, etc.)and analyze what each element is trying to communicate.
+- Given the context of the image, determine if two elements are communicating potentially conflicting information.
+- If two elements portray conflicting information, then there is a local inconsistency.
+- Identify each element’s relevance within the context.
+- Determine if it actually makes sense for each element or group of elements to be simultaneously present in a situation like the image shows.
+- If two elements appear in a way that does not make logical sense, then the image is inconsistent.`,
+};
   removeExistingTooltips();
   const images = document.querySelectorAll("img");
   for (const img of images) {
@@ -144,7 +199,7 @@ window.detectImageDefects = async function(defectTypes) {
 
     let results = [];
     for (const type of defectTypes) {
-      const result=await callApiWithImage("AIzaSyCtpqSQLSYIqyVqGps2neMXOZLFz6pkPEU","You are an autonomous vehicle expert trained to find defects in visual requirements for autonomous vehicles",prompts[type],base64)
+      const result=await callApiWithImage("AIzaSyCtpqSQLSYIqyVqGps2neMXOZLFz6pkPEU","You are an autonomous vehicle expert trained to find defects in visual requirements for autonomous vehicles, I will provide you with images that can be used for Autonomous Vehicle Requirements. Follow the steps above and conclude if a defect is present in the image or not. If there is no defect present, say it does not exist. To help, act as an autonomous vehicle system and what you would do if you received an image like this as part of a requirements document.",prompts[type],base64)
       results.push({name: type, content: result});
     }
 console.log(results)
