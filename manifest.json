@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Image Defect Detector",
+  "version": "1.0",
+  "description": "Detects defects in images using Gemini API and shows tooltips.",
+  "permissions": ["scripting", "activeTab", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Defect Detector"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }],
+  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

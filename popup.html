@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Defect Detector</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Image Defect Detector</h1>
+    <h2>Select Defect Types</h2>
+    <form id="defectForm">
+      <label id="selectAllLabel"><input type="checkbox" id="selectAll" > Select All</label>
+      <label><input type="checkbox" name="defect" value="symbolic"> Symbolic Ambiguity</label>
+      <label><input type="checkbox" name="defect" value="focus"> Focus Ambiguity</label>
+      <label><input type="checkbox" name="defect" value="background"> Background Ambiguity</label>
+      <label><input type="checkbox" name="defect" value="scope"> Scope Ambiguity</label>
+      <label><input type="checkbox" name="defect" value="spatial"> Spatial Incompleteness</label>
+      <label><input type="checkbox" name="defect" value="inconsistency"> Local Inconsistency</label>      
+      <button id="run" type="submit">Analyze Images</button>
+    </form>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
