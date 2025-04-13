@@ -160,7 +160,7 @@ function createStyledTooltip(defectDetails) {
 
 
 
-window.detectImageDefects = async function(defectTypes) {
+window.detectImageDefects = async function(defectTypes,apiKey) {
 document.documentElement.style.cursor = 'wait';  // This targets the <html> element
   const prompts = {
     symbolic: `A symbolic ambiguity is a type of defect that can appear in an image used for AV requirements. This is how to identify if a symbolic ambiguity is present in an image or not.
@@ -259,7 +259,7 @@ Here are the steps:
 
     let results = [];
     for (const type of defectTypes) {
-      const result=await callApiWithImage("AIzaSyCtpqSQLSYIqyVqGps2neMXOZLFz6pkPEU","You are an autonomous vehicle expert trained to find defects in visual requirements for autonomous vehicles, I will provide you with images that can be used for Autonomous Vehicle Requirements. Follow the steps above and conclude if a defect is present in the image or not. If there is no defect present, say it does not exist. To help, act as an autonomous vehicle system and what you would do if you received an image like this as part of a requirements document.",prompts[type],base64)
+      const result=await callApiWithImage(apiKey,"You are an autonomous vehicle expert trained to find defects in visual requirements for autonomous vehicles, I will provide you with images that can be used for Autonomous Vehicle Requirements. Follow the steps above and conclude if a defect is present in the image or not. If there is no defect present, say it does not exist. To help, act as an autonomous vehicle system and what you would do if you received an image like this as part of a requirements document.",prompts[type],base64)
       results.push({name: type, content: result});
     }
     removeTooltip(i);
